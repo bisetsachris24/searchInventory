@@ -57,42 +57,33 @@ public class InventoryApp {
 
     private static ArrayList<Product> getInventory() {
 
-        // Start with an empty list — we fill it from the file below
         ArrayList<Product> products = new ArrayList<>();
 
+        // ADD THIS LINE — it will print the exact folder Java is looking in
+        System.out.println("Looking for file at: " + new java.io.File("main/src//reinventory.csv").getAbsolutePath());
+
         try {
-            // BufferedReader lets us read one full line at a time from the file
-            BufferedReader reader = new BufferedReader(new FileReader("inventory.csv"));
+            FileReader amaniFilereader = new FileReader("src/main/resources/inventory.csv");
+            BufferedReader reader = new BufferedReader(amaniFilereader);
 
             String line;
-
-            // readLine() returns null when there are no more lines — that stops the loop
             while ((line = reader.readLine()) != null) {
 
-                // Split the line at every pipe | character
-                // "\\|" is needed because | is a special character in Java regex
-                // Result example: parts[0]="4567"  parts[1]="Hammer"  parts[2]="19.49"
                 String[] parts = line.split("\\|");
 
-                // Convert each part to the correct data type
-                int id       = Integer.parseInt(parts[0]);   // String → int
-                String name  = parts[1];                     // already a String
-                double price = Double.parseDouble(parts[2]); // String → double
+                int id = Integer.parseInt(parts[0]);
+                String name = parts[1];
+                double price = Double.parseDouble(parts[2]);
 
-                // Build a Product and add it to the list
                 products.add(new Product(id, name, price));
             }
 
-            // Always close the file when finished to release system resources
             reader.close();
 
         } catch (Exception e) {
-            // If the file is missing or a line is malformed, print the problem
-            // instead of crashing the whole program
             System.out.println("Error reading inventory.csv: " + e.getMessage());
         }
 
-        // Return the completed list (may be empty if the file had problems)
         return products;
     }
 
@@ -104,77 +95,27 @@ public class InventoryApp {
     private static void listProducts() {
         System.out.println("\n--- Product List ---");
 
+        getInventory();
+
         // Enhanced for-loop: "p" holds one Product at a time on each pass
         for (Product p : inventory) {
             System.out.println(p);  // calls Product's toString() method
         }
     }
 
-    // -------------------------------------------------------------------------
-    // lookupById()
-    // Asks the user for an ID, then searches the inventory for a match.
-    // -------------------------------------------------------------------------
+
     private static void lookupById() {
-        System.out.print("Enter product ID to search: ");
-        int id = scanner.nextInt();
 
-        // Loop through every product to find one whose ID matches
-        for (Product p : inventory) {
-            if (p.getId() == id) {
-                System.out.println("Found: " + p);
-                return; // stop searching once we find it
-            }
-        }
-
-        // Only reaches here if no product matched
-        System.out.println("No product found with ID: " + id);
     }
 
-    // -------------------------------------------------------------------------
-    // addProduct()
-    // Asks the user for details and adds a new Product to the inventory list.
-    // -------------------------------------------------------------------------
+
     private static void addProduct() {
-        System.out.print("Enter new product ID: ");
-        int id = scanner.nextInt();
 
-        System.out.print("Enter product name: ");
-        String name = scanner.next();  // reads one word; use nextLine() for spaces
-
-        System.out.print("Enter product price: ");
-        double price = scanner.nextDouble();
-
-        // Create the new Product and add it to the existing ArrayList
-        inventory.add(new Product(id, name, price));
-        System.out.println("Product added successfully!");
     }
 
-    // -------------------------------------------------------------------------
-    // searchByPrice()
-    // Asks for a min and max price, then prints every product in that range.
-    // -------------------------------------------------------------------------
+
     private static void searchByPrice() {
-        System.out.print("Enter minimum price: ");
-        double min = scanner.nextDouble();
 
-        System.out.print("Enter maximum price: ");
-        double max = scanner.nextDouble();
 
-        System.out.println("\n--- Products between $" + min + " and $" + max + " ---");
-
-        boolean found = false;
-
-        for (Product p : inventory) {
-            // Check if this product's price falls inside the range
-            if (p.getPrice() >= min && p.getPrice() <= max) {
-                System.out.println(p);
-                found = true;
-            }
-        }
-
-        // Let the user know if nothing matched the range they entered
-        if (!found) {
-            System.out.println("No products found in that price range.");
-        }
     }
 }
