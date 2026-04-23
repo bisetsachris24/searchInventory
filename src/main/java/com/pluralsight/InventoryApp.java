@@ -6,11 +6,10 @@ import java.util.*;
 
 public class InventoryApp {
 
-    // Scanner reads input the user types in the terminal
+    // i create scanner to ask user for input
     static Scanner theScanner = new Scanner(System.in);
-
-
-    static ArrayList<Product> inventory = getInventory();
+    // create
+    static ArrayList<Product> myInventory = getInventory();
 
     // main() is where Java starts running your program
     public static void main(String[] args) {
@@ -34,40 +33,46 @@ public class InventoryApp {
             // Match the user's choice to the right method
             switch (choice) {
                 case 1:
-                    listProducts();   // print every product in the list
+                    // print every product in the list
+                    listProducts();
                     break;
+                // find one product by its ID number
                 case 2:
-                    lookupById();     // find one product by its ID number
+                    lookupById();
                     break;
+
                 case 3:
-                    searchByPrice();  // find products inside a price range
+                    // find products inside a price range
+                    searchByPrice();
                     break;
                 case 4:
-                    addProduct();     // add a brand-new product to the list
+                    // add a brand-new product to the list
+                    addProduct();
                     break;
+                // loop stops because choice == 5
                 case 5:
-                    System.out.println("Goodbye!");  // loop stops because choice == 5
+                    System.out.println("Goodbye!");
                     break;
                 default:
                     System.out.println("Invalid option. Please enter 1 - 5.");
             }
-
-        } while (choice != 5); // keep looping until the user picks 5 to quit
+// keep looping until the user picks 5 to quit
+        } while (choice != 5);
     }
 
     private static ArrayList<Product> getInventory() {
 
         ArrayList<Product> products = new ArrayList<>();
 
-        // ADD THIS LINE — it will print the exact folder Java is looking in
+        // Looking the exact folder Java is looking in
         System.out.println("Looking for file at: " + new java.io.File("main/src//reinventory.csv").getAbsolutePath());
 
         try {
             FileReader amaniFilereader = new FileReader("src/main/resources/inventory.csv");
-            BufferedReader reader = new BufferedReader(amaniFilereader);
+            BufferedReader amaniReader = new BufferedReader(amaniFilereader);
 
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = amaniReader.readLine()) != null) {
 
                 String[] parts = line.split("\\|");
 
@@ -78,7 +83,7 @@ public class InventoryApp {
                 products.add(new Product(id, name, price));
             }
 
-            reader.close();
+            amaniReader.close();
 
         } catch (Exception e) {
             System.out.println("Error reading inventory.csv: " + e.getMessage());
@@ -92,9 +97,9 @@ public class InventoryApp {
         System.out.println("\n--- Product List ---");
 
         // Sort alphabetically by name before printing
-        Collections.sort(inventory);
+        Collections.sort(myInventory);
 
-        for (Product p : inventory) {
+        for (Product p : myInventory) {
             System.out.println(p);  // calls Product's toString() method
         }
     }
@@ -107,7 +112,7 @@ public class InventoryApp {
         int id = theScanner.nextInt();
 
         // Loop through every product in the inventory list
-        for (Product p : inventory) {
+        for (Product p : myInventory) {
 
             // Check if this product's ID matches what the user typed
             if (p.getId() == id) {
@@ -140,11 +145,43 @@ public class InventoryApp {
         Product newProduct = new Product(id, name, price);
 
         // Add the new product to the inventory ArrayList
-        inventory.add(newProduct);
+        myInventory.add(newProduct);
 
         // Confirm to the user that it worked
         System.out.println("Product added successfully: " + newProduct);
     }
+    private static void searchByPrice() {
+        // Ask the user for the lowest price they want to search from
+        System.out.print("Enter minimum price: ");
+        double min = theScanner.nextDouble();
+
+        // Ask the user for the highest price they want to search to
+        System.out.print("Enter maximum price: ");
+        double max = theScanner.nextDouble();
+
+        // Print a header showing the range the user entered
+        System.out.println("\n--- Products between $" + min + " and $" + max + " ---");
+
+        // This flag tracks whether we found at least one match
+        boolean found = false;
+
+        // Loop through every product in the inventory
+        for (Product p : myInventory) {
+
+            // Check if this product's price falls inside the min and max range
+            // >= means "greater than or equal to" and <= means "less than or equal to"
+            if (p.getPrice() >= min && p.getPrice() <= max) {
+                System.out.println(p);  // print the matching product
+                found = true;           // mark that we found at least one match
+            }
+        }
+
+        // If the loop finished and found is still false, no products matched
+        if (!found) {
+            System.out.println("No products found in that price range.");
+        }
+    }
+}
 
 
 
