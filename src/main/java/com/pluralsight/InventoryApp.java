@@ -8,7 +8,7 @@ public class InventoryApp {
 
     // i create scanner to ask user for input
     static Scanner theScanner = new Scanner(System.in);
-    // create
+    // create array list
     static ArrayList<Product> myInventory = getInventory();
 
     // main() is where Java starts running your program
@@ -103,8 +103,6 @@ public class InventoryApp {
             System.out.println(p);  // calls Product's toString() method
         }
     }
-
-
 
     private static void lookupById() {
         // Ask the user to type the ID they want to search for
