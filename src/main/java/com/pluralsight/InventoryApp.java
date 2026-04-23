@@ -87,35 +87,64 @@ public class InventoryApp {
         return products;
     }
 
-    // -------------------------------------------------------------------------
-    // listProducts()
-    // Loops through every product in the inventory ArrayList and prints it.
-    // void means this method does not return anything — it just prints.
-    // -------------------------------------------------------------------------
+
     private static void listProducts() {
         System.out.println("\n--- Product List ---");
 
-        getInventory();
+        // Sort alphabetically by name before printing
+        Collections.sort(inventory);
 
-        // Enhanced for-loop: "p" holds one Product at a time on each pass
         for (Product p : inventory) {
             System.out.println(p);  // calls Product's toString() method
         }
     }
 
 
+
     private static void lookupById() {
+        // Ask the user to type the ID they want to search for
+        System.out.print("Enter product ID to search: ");
+        int id = theScanner.nextInt();
 
+        // Loop through every product in the inventory list
+        for (Product p : inventory) {
+
+            // Check if this product's ID matches what the user typed
+            if (p.getId() == id) {
+                System.out.println("Found: " + p);
+                return; // stop the loop immediately once we find a match
+            }
+        }
+
+        // This line only runs if the loop finished without finding a match
+        System.out.println("No product found with ID: " + id);
     }
-
 
     private static void addProduct() {
+        // Ask the user for the new product's ID number
+        System.out.print("Enter new product ID: ");
+        int id = theScanner.nextInt();
 
+        // Ask for the product name
+        // nextLine() is used instead of next() so it can handle names with spaces
+        // The first nextLine() clears the leftover Enter key from nextInt() above
+        theScanner.nextLine();
+        System.out.print("Enter product name: ");
+        String name = theScanner.nextLine();
+
+        // Ask for the price
+        System.out.print("Enter product price: ");
+        double price = theScanner.nextDouble();
+
+        // Create a brand new Product object using the three values the user typed
+        Product newProduct = new Product(id, name, price);
+
+        // Add the new product to the inventory ArrayList
+        inventory.add(newProduct);
+
+        // Confirm to the user that it worked
+        System.out.println("Product added successfully: " + newProduct);
     }
 
 
-    private static void searchByPrice() {
 
-
-    }
-}
